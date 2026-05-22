@@ -7,7 +7,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 
 export async function getUserByOpenId(openId: string) {
   // Return mock admin user to avoid breaking the auth system
-  return { id: 1, openId, role: "admin", name: "Admin", email: "", loginMethod: "", createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() };
+  return { id: 1, openId, role: "admin" as const, name: "Admin", email: "", loginMethod: "", createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() };
 }
 
 export async function createGuestConfirmation(data: InsertGuestConfirmation) {

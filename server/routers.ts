@@ -63,6 +63,22 @@ export const appRouter = router({
         
         return { success: true };
       }),
+      
+    list: publicProcedure.query(async () => {
+      // Stubbed since database is removed
+      return [] as Array<{
+        id: number;
+        fullName: string;
+        numberOfCompanions: number;
+        confirmationStatus: "yes" | "no" | "maybe";
+        createdAt: Date;
+      }>;
+    }),
+    
+    stats: publicProcedure.query(async () => {
+      // Stubbed since database is removed
+      return { total: 0, confirmed: 0, declined: 0, maybe: 0, totalCompanions: 0 };
+    }),
   }),
 });
 
