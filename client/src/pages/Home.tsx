@@ -732,9 +732,26 @@ export default function Home() {
         setSubmitted(false);
       }, 4000);
     },
-    onError: error => {
-      toast.error("Erro ao confirmar presença. Tente novamente.");
-      console.error(error);
+    onError: (error: any) => {
+      let errorMessage = "Erro desconhecido.";
+      
+      const msg = error?.message || "";
+      const httpStatus = error?.data?.httpStatus;
+      
+      if (msg.includes("fetch failed") || msg.includes("NetworkError")) {
+        errorMessage = `Erro 1 (Conexão): O Vercel não está respondendo.`;
+      } else if (httpStatus === 404 || msg.includes("404") || msg.includes("Not Found")) {
+        errorMessage = `Erro 2 (Rota 404): O Vercel não encontrou o arquivo da API.`;
+      } else if (httpStatus === 500 || msg.includes("500") || msg.includes("Internal Server Error")) {
+        errorMessage = `Erro 3 (Servidor 500): O código do backend "crashou" internamente.`;
+      } else if (msg.includes("Unexpected token") || msg.includes("JSON")) {
+        errorMessage = `Erro 4 (Resposta Inválida): O Vercel enviou HTML em vez de JSON (Provavelmente 404).`;
+      } else {
+        errorMessage = `Erro 5 (Outro): ${msg}`;
+      }
+      
+      toast.error(`${errorMessage} | Detalhes: ${msg.substring(0, 50)}...`, { duration: 15000 });
+      console.error("ERRO COMPLETO PARA DIAGNÓSTICO:", error);
     },
   });
 
