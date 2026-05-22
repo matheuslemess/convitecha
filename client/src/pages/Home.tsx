@@ -1,10 +1,10 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
 /* ============================================================
-   CHÁ DE FRALDA DO EZE – Western Vintage Baby Shower
-   Layout fiel ao convite de referência
+   CHÃ DE FRALDA DO EZE â€“ Western Vintage Baby Shower
+   Layout fiel ao convite de referÃªncia
    ============================================================ */
 
 const styles = `
@@ -36,7 +36,7 @@ const styles = `
   }
 
   /* ==============================
-     PAGE BACKGROUND — Vinho escuro + xadrez
+     PAGE BACKGROUND â€” Vinho escuro + xadrez
      ============================== */
   .invitation-page {
     min-height: 100vh;
@@ -55,7 +55,7 @@ const styles = `
   }
 
   /* ==============================
-     CARD — Pergaminho central
+     CARD â€” Pergaminho central
      ============================== */
   .invitation-card {
     position: relative;
@@ -92,7 +92,7 @@ const styles = `
   }
 
   /* ==============================
-     CONTEÚDO PRINCIPAL
+     CONTEÃšDO PRINCIPAL
      ============================== */
   .card-content {
     position: relative;
@@ -104,7 +104,7 @@ const styles = `
   }
 
   /* ==============================
-     MEDALHÃO + CORDA
+     MEDALHÃƒO + CORDA
      ============================== */
   .medallion-area {
     display: flex;
@@ -160,7 +160,7 @@ const styles = `
   }
 
   /* ==============================
-     TÍTULO PRINCIPAL
+     TÃTULO PRINCIPAL
      ============================== */
   .title-block {
     text-align: center;
@@ -257,7 +257,7 @@ const styles = `
   }
 
   /* ==============================
-     CAIXAS DE INFORMAÇÃO (endereço, data, horário)
+     CAIXAS DE INFORMAÃ‡ÃƒO (endereÃ§o, data, horÃ¡rio)
      ============================== */
   .info-boxes {
     display: flex;
@@ -304,7 +304,7 @@ const styles = `
   }
 
   /* ==============================
-     ILUSTRAÇÕES BOTTOM
+     ILUSTRAÃ‡Ã•ES BOTTOM
      ============================== */
   .bottom-illustrations {
     display: flex;
@@ -335,7 +335,7 @@ const styles = `
   }
 
   /* ==============================
-     SEPARADOR CONVITE → FORMULÁRIO
+     SEPARADOR CONVITE â†’ FORMULÃRIO
      ============================== */
   .form-separator {
     text-align: center;
@@ -361,7 +361,7 @@ const styles = `
   }
 
   /* ==============================
-     FORMULÁRIO
+     FORMULÃRIO
      ============================== */
   .form-area {
     width: 100%;
@@ -429,7 +429,7 @@ const styles = `
   }
 
   /* ==============================
-     OPÇÕES CONFIRMAÇÃO
+     OPÃ‡Ã•ES CONFIRMAÃ‡ÃƒO
      ============================== */
   .options-list {
     display: flex;
@@ -506,7 +506,7 @@ const styles = `
   }
 
   /* ==============================
-     BOTÃO CONFIRMAR
+     BOTÃƒO CONFIRMAR
      ============================== */
   .confirm-btn {
     width: 100%;
@@ -552,7 +552,7 @@ const styles = `
   }
 
   /* ==============================
-     RODAPÉ ORNAMENTO
+     RODAPÃ‰ ORNAMENTO
      ============================== */
   .card-footer {
     display: flex;
@@ -720,52 +720,64 @@ export default function Home() {
     "yes" | "no" | "maybe"
   >("yes");
   const [submitted, setSubmitted] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
-  const submitConfirmation = trpc.confirmations.submit.useMutation({
-    onSuccess: () => {
-      setSubmitted(true);
-      toast.success("Presença confirmada com sucesso!");
-      setTimeout(() => {
-        setFullName("");
-        setNumberOfCompanions("0");
-        setConfirmationStatus("yes");
-        setSubmitted(false);
-      }, 4000);
-    },
-    onError: (error: any) => {
-      let errorMessage = "Erro desconhecido.";
-      
-      const msg = error?.message || "";
-      const httpStatus = error?.data?.httpStatus;
-      
-      if (msg.includes("fetch failed") || msg.includes("NetworkError")) {
-        errorMessage = `Erro 1 (Conexão): O Vercel não está respondendo.`;
-      } else if (httpStatus === 404 || msg.includes("404") || msg.includes("Not Found")) {
-        errorMessage = `Erro 2 (Rota 404): O Vercel não encontrou o arquivo da API.`;
-      } else if (httpStatus === 500 || msg.includes("500") || msg.includes("Internal Server Error")) {
-        errorMessage = `Erro 3 (Servidor 500): O código do backend "crashou" internamente.`;
-      } else if (msg.includes("Unexpected token") || msg.includes("JSON")) {
-        errorMessage = `Erro 4 (Resposta Inválida): O Vercel enviou HTML em vez de JSON (Provavelmente 404).`;
-      } else {
-        errorMessage = `Erro 5 (Outro): ${msg}`;
-      }
-      
-      toast.error(`${errorMessage} | Detalhes: ${msg.substring(0, 50)}...`, { duration: 15000 });
-      console.error("ERRO COMPLETO PARA DIAGNÓSTICO:", error);
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim()) {
       toast.error("Por favor, insira seu nome completo");
       return;
     }
-    submitConfirmation.mutate({
-      fullName: fullName.trim(),
-      numberOfCompanions: parseInt(numberOfCompanions, 10),
-      confirmationStatus,
-    });
+
+    const token = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+    const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+
+    if (!token || !chatId) {
+      toast.error("Erro tÃ©cnico: O robÃ´ do Telegram nÃ£o foi configurado corretamente nas variÃ¡veis de ambiente.");
+      return;
+    }
+
+    setIsPending(true);
+
+    const statusLabels = {
+      yes: "Confirmou presenÃ§a âœ…",
+      no: "Recusou presenÃ§a âŒ",
+      maybe: "Talvez compareÃ§a ðŸ¤·â€â™‚ï¸",
+    };
+
+    const message = `ðŸŽ‰ *Nova resposta ao convite!*\n\n*Nome:* ${fullName.trim()}\n*Status:* ${statusLabels[confirmationStatus]}\n*Acompanhantes:* ${numberOfCompanions}`;
+
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: "Markdown"
+        })
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+        toast.success("PresenÃ§a confirmada com sucesso!");
+        setTimeout(() => {
+          setFullName("");
+          setNumberOfCompanions("0");
+          setConfirmationStatus("yes");
+          setSubmitted(false);
+        }, 4000);
+      } else {
+        const errorText = await res.text();
+        toast.error(`Erro ao enviar para o Telegram. Verifique as credenciais do bot.`);
+        console.error("Telegram API Error:", errorText);
+      }
+    } catch (error: any) {
+      toast.error(`Erro de conexÃ£o com o Telegram: ${error.message}`);
+      console.error(error);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   /* ---------- SUCCESS ---------- */
@@ -775,17 +787,17 @@ export default function Home() {
         <style>{styles}</style>
         <div className="success-overlay">
           <div className="success-box">
-            <div className="success-badge">🤠</div>
+            <div className="success-badge">ðŸ¤ </div>
             <h2 className="success-h2">Yeehaw!</h2>
             <p className="success-p">
-              {fullName}, sua presença foi registrada.
+              {fullName}, sua presenÃ§a foi registrada.
             </p>
             <p className="success-small">
-              Nos vemos no chá de fralda do Eze! 🐴
+              Nos vemos no chÃ¡ de fralda do Eze! ðŸ´
             </p>
             <div className="card-footer">
               <span className="footer-ln"></span>
-              <span className="footer-star">★</span>
+              <span className="footer-star">â˜…</span>
               <span className="footer-ln"></span>
             </div>
           </div>
@@ -801,31 +813,31 @@ export default function Home() {
       <div className="invitation-page">
         <div className="invitation-card">
           <div className="card-content">
-            {/* ─── Medalhão pendurado ─── */}
+            {/* â”€â”€â”€ MedalhÃ£o pendurado â”€â”€â”€ */}
             <div className="medallion-area">
-              <img src="/images/medallion.png" alt="Medalhão vintage" />
+              <img src="/images/medallion.png" alt="MedalhÃ£o vintage" />
             </div>
 
-            {/* ─── Banner fita curvada ─── */}
+            {/* â”€â”€â”€ Banner fita curvada â”€â”€â”€ */}
             <div className="ribbon-banner">
-              <p className="ribbon-text">Você está convidado para o</p>
+              <p className="ribbon-text">VocÃª estÃ¡ convidado para o</p>
             </div>
 
-            {/* ─── Título principal ─── */}
+            {/* â”€â”€â”€ TÃ­tulo principal â”€â”€â”€ */}
             <div className="title-block">
-              <h1 className="title-main">Chá de Bebê</h1>
+              <h1 className="title-main">ChÃ¡ de BebÃª</h1>
               <p className="title-sub">do</p>
               <p className="baby-name">EZE</p>
             </div>
 
-            {/* ─── Divisor ─── */}
+            {/* â”€â”€â”€ Divisor â”€â”€â”€ */}
             <div className="divider">
               <span className="divider-line"></span>
               <span className="divider-diamond"></span>
               <span className="divider-line"></span>
             </div>
 
-            {/* ─── Mensagem de presentes ─── */}
+            {/* â”€â”€â”€ Mensagem de presentes â”€â”€â”€ */}
             <div className="gift-message">
               <p className="highlight">
                 Com carinho, sugerimos fraldas
@@ -833,19 +845,19 @@ export default function Home() {
                 tamanho M ou G.
               </p>
               <p className="secondary">
-                E, se sentirem-se à vontade, um mimo
+                E, se sentirem-se Ã  vontade, um mimo
                 <br />
-                será muito especial!
+                serÃ¡ muito especial!
               </p>
             </div>
 
-            {/* ─── Caixas de informação ─── */}
+            {/* â”€â”€â”€ Caixas de informaÃ§Ã£o â”€â”€â”€ */}
             <div className="info-boxes">
               <div className="illust-left">
                 <img src="/images/teddy.png" alt="Ursinho vintage" />
               </div>
               <div className="info-box">
-                <div className="info-box-icon">📅</div>
+                <div className="info-box-icon">ðŸ“…</div>
                 <p className="info-box-text">
                   13 de
                   <br />
@@ -854,7 +866,7 @@ export default function Home() {
                   2026
                 </p>
                 <p className="info-box-text">
-                  Às
+                  Ã€s
                   <br />
                   15h00
                 </p>
@@ -862,20 +874,20 @@ export default function Home() {
               <div className="illust-right">
                 <img
                   src="/images/rocking-horse.png"
-                  alt="Cavalinho de balanço"
+                  alt="Cavalinho de balanÃ§o"
                 />
               </div>
             </div>
 
-            {/* ─── Ilustrações bottom ─── */}
+            {/* â”€â”€â”€ IlustraÃ§Ãµes bottom â”€â”€â”€ */}
             <div className="bottom-illustrations"></div>
 
-            {/* ═══════════════════════════════════
-                FORMULÁRIO DE CONFIRMAÇÃO
-                ═══════════════════════════════════ */}
+            {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+                FORMULÃRIO DE CONFIRMAÃ‡ÃƒO
+                â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
             <div className="form-separator">
               <div className="form-separator-line"></div>
-              <span className="form-separator-text">Confirme sua presença</span>
+              <span className="form-separator-text">Confirme sua presenÃ§a</span>
             </div>
 
             <div className="form-area">
@@ -888,7 +900,7 @@ export default function Home() {
                     placeholder="Digite seu nome completo"
                     value={fullName}
                     onChange={e => setFullName(e.target.value)}
-                    disabled={submitConfirmation.isPending}
+                    disabled={isPending}
                   />
                 </div>
 
@@ -902,11 +914,11 @@ export default function Home() {
                       className="form-input companions-field"
                       value={numberOfCompanions}
                       onChange={e => setNumberOfCompanions(e.target.value)}
-                      disabled={submitConfirmation.isPending}
+                      disabled={isPending}
                     />
                     <span className="companions-label">
                       {numberOfCompanions === "0"
-                        ? "Apenas você"
+                        ? "Apenas vocÃª"
                         : `+ ${numberOfCompanions} ${numberOfCompanions === "1" ? "acompanhante" : "acompanhantes"}`}
                     </span>
                   </div>
@@ -918,7 +930,7 @@ export default function Home() {
                     <div
                       className={`option-item ${confirmationStatus === "yes" ? "selected-yes" : ""}`}
                       onClick={() =>
-                        !submitConfirmation.isPending &&
+                        !isPending &&
                         setConfirmationStatus("yes")
                       }
                     >
@@ -930,18 +942,18 @@ export default function Home() {
                         className="option-radio"
                         checked={confirmationStatus === "yes"}
                         onChange={() => setConfirmationStatus("yes")}
-                        disabled={submitConfirmation.isPending}
+                        disabled={isPending}
                       />
                       <label htmlFor="opt-yes" className="option-label">
-                        <span className="option-emoji">🤠</span>
-                        <span>Sim, estarei lá!</span>
+                        <span className="option-emoji">ðŸ¤ </span>
+                        <span>Sim, estarei lÃ¡!</span>
                       </label>
                     </div>
 
                     <div
                       className={`option-item ${confirmationStatus === "maybe" ? "selected-maybe" : ""}`}
                       onClick={() =>
-                        !submitConfirmation.isPending &&
+                        !isPending &&
                         setConfirmationStatus("maybe")
                       }
                     >
@@ -953,18 +965,18 @@ export default function Home() {
                         className="option-radio"
                         checked={confirmationStatus === "maybe"}
                         onChange={() => setConfirmationStatus("maybe")}
-                        disabled={submitConfirmation.isPending}
+                        disabled={isPending}
                       />
                       <label htmlFor="opt-maybe" className="option-label">
-                        <span className="option-emoji">🤔</span>
-                        <span>Talvez, ainda não sei</span>
+                        <span className="option-emoji">ðŸ¤”</span>
+                        <span>Talvez, ainda nÃ£o sei</span>
                       </label>
                     </div>
 
                     <div
                       className={`option-item ${confirmationStatus === "no" ? "selected-no" : ""}`}
                       onClick={() =>
-                        !submitConfirmation.isPending &&
+                        !isPending &&
                         setConfirmationStatus("no")
                       }
                     >
@@ -976,11 +988,11 @@ export default function Home() {
                         className="option-radio"
                         checked={confirmationStatus === "no"}
                         onChange={() => setConfirmationStatus("no")}
-                        disabled={submitConfirmation.isPending}
+                        disabled={isPending}
                       />
                       <label htmlFor="opt-no" className="option-label">
-                        <span className="option-emoji">😢</span>
-                        <span>Não poderei ir</span>
+                        <span className="option-emoji">ðŸ˜¢</span>
+                        <span>NÃ£o poderei ir</span>
                       </label>
                     </div>
                   </div>
@@ -988,18 +1000,18 @@ export default function Home() {
 
                 <button
                   type="submit"
-                  disabled={submitConfirmation.isPending}
+                  disabled={isPending}
                   className="confirm-btn"
                 >
-                  {submitConfirmation.isPending
+                  {isPending
                     ? "Confirmando..."
-                    : "Confirmar Presença"}
+                    : "Confirmar PresenÃ§a"}
                 </button>
               </form>
 
               <div className="card-footer">
                 <span className="footer-ln"></span>
-                <span className="footer-star">★</span>
+                <span className="footer-star">â˜…</span>
                 <span className="footer-ln"></span>
               </div>
             </div>
@@ -1009,3 +1021,4 @@ export default function Home() {
     </>
   );
 }
+
