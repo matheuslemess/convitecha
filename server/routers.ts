@@ -38,11 +38,14 @@ export const appRouter = router({
         
         if (ENV.telegramBotToken && ENV.telegramChatId) {
           try {
-            const res = await fetch(`https://api.telegram.org/bot${ENV.telegramBotToken}/sendMessage`, {
+            const token = ENV.telegramBotToken.trim();
+            const chatId = ENV.telegramChatId.trim();
+            
+            const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                chat_id: ENV.telegramChatId,
+                chat_id: chatId,
                 text: message,
                 parse_mode: "Markdown"
               })
