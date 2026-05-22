@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
@@ -733,19 +733,19 @@ export default function Home() {
     const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
 
     if (!token || !chatId) {
-      toast.error("Erro tÃ©cnico: O robÃ´ do Telegram nÃ£o foi configurado corretamente nas variÃ¡veis de ambiente.");
+      toast.error("Erro técnico: O robô do Telegram não foi configurado corretamente nas variáveis de ambiente.");
       return;
     }
 
     setIsPending(true);
 
     const statusLabels = {
-      yes: "Confirmou presenÃ§a âœ…",
-      no: "Recusou presenÃ§a âŒ",
-      maybe: "Talvez compareÃ§a ðŸ¤·â€â™‚ï¸",
+      yes: "Confirmou presença ✅",
+      no: "Recusou presença ❌",
+      maybe: "Talvez compareça 🤷‍♂️",
     };
 
-    const message = `ðŸŽ‰ *Nova resposta ao convite!*\n\n*Nome:* ${fullName.trim()}\n*Status:* ${statusLabels[confirmationStatus]}\n*Acompanhantes:* ${numberOfCompanions}`;
+    const message = `🎉 *Nova resposta ao convite!*\n\n*Nome:* ${fullName.trim()}\n*Status:* ${statusLabels[confirmationStatus]}\n*Acompanhantes:* ${numberOfCompanions}`;
 
     try {
       const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -760,7 +760,7 @@ export default function Home() {
 
       if (res.ok) {
         setSubmitted(true);
-        toast.success("PresenÃ§a confirmada com sucesso!");
+        toast.success("Presença confirmada com sucesso!");
         setTimeout(() => {
           setFullName("");
           setNumberOfCompanions("0");
@@ -773,7 +773,7 @@ export default function Home() {
         console.error("Telegram API Error:", errorText);
       }
     } catch (error: any) {
-      toast.error(`Erro de conexÃ£o com o Telegram: ${error.message}`);
+      toast.error(`Erro de conexão com o Telegram: ${error.message}`);
       console.error(error);
     } finally {
       setIsPending(false);
@@ -787,17 +787,17 @@ export default function Home() {
         <style>{styles}</style>
         <div className="success-overlay">
           <div className="success-box">
-            <div className="success-badge">ðŸ¤ </div>
+            <div className="success-badge">🤠</div>
             <h2 className="success-h2">Yeehaw!</h2>
             <p className="success-p">
-              {fullName}, sua presenÃ§a foi registrada.
+              {fullName}, sua presença foi registrada.
             </p>
             <p className="success-small">
-              Nos vemos no chÃ¡ de fralda do Eze! ðŸ´
+              Nos vemos no chá de fralda do Eze! 🐎
             </p>
             <div className="card-footer">
               <span className="footer-ln"></span>
-              <span className="footer-star">â˜…</span>
+              <span className="footer-star">★</span>
               <span className="footer-ln"></span>
             </div>
           </div>
@@ -813,31 +813,31 @@ export default function Home() {
       <div className="invitation-page">
         <div className="invitation-card">
           <div className="card-content">
-            {/* â”€â”€â”€ MedalhÃ£o pendurado â”€â”€â”€ */}
+            {/* ——— Medalhão pendurado ——— */}
             <div className="medallion-area">
-              <img src="/images/medallion.png" alt="MedalhÃ£o vintage" />
+              <img src="/images/medallion.png" alt="Medalhão vintage" />
             </div>
 
-            {/* â”€â”€â”€ Banner fita curvada â”€â”€â”€ */}
+            {/* ——— Banner fita curvada ——— */}
             <div className="ribbon-banner">
-              <p className="ribbon-text">VocÃª estÃ¡ convidado para o</p>
+              <p className="ribbon-text">Você está convidado para o</p>
             </div>
 
-            {/* â”€â”€â”€ TÃ­tulo principal â”€â”€â”€ */}
+            {/* ——— Título principal ——— */}
             <div className="title-block">
-              <h1 className="title-main">ChÃ¡ de BebÃª</h1>
+              <h1 className="title-main">Chá de Bebê</h1>
               <p className="title-sub">do</p>
               <p className="baby-name">EZE</p>
             </div>
 
-            {/* â”€â”€â”€ Divisor â”€â”€â”€ */}
+            {/* ——— Divisor ——— */}
             <div className="divider">
               <span className="divider-line"></span>
               <span className="divider-diamond"></span>
               <span className="divider-line"></span>
             </div>
 
-            {/* â”€â”€â”€ Mensagem de presentes â”€â”€â”€ */}
+            {/* ——— Mensagem de presentes ——— */}
             <div className="gift-message">
               <p className="highlight">
                 Com carinho, sugerimos fraldas
@@ -845,19 +845,19 @@ export default function Home() {
                 tamanho M ou G.
               </p>
               <p className="secondary">
-                E, se sentirem-se Ã  vontade, um mimo
+                E, se sentirem-se à vontade, um mimo
                 <br />
-                serÃ¡ muito especial!
+                será muito especial!
               </p>
             </div>
 
-            {/* â”€â”€â”€ Caixas de informaÃ§Ã£o â”€â”€â”€ */}
+            {/* ——— Caixas de informação ——— */}
             <div className="info-boxes">
               <div className="illust-left">
                 <img src="/images/teddy.png" alt="Ursinho vintage" />
               </div>
               <div className="info-box">
-                <div className="info-box-icon">ðŸ“…</div>
+                <div className="info-box-icon">📅</div>
                 <p className="info-box-text">
                   13 de
                   <br />
@@ -866,7 +866,7 @@ export default function Home() {
                   2026
                 </p>
                 <p className="info-box-text">
-                  Ã€s
+                  Às
                   <br />
                   15h00
                 </p>
@@ -874,20 +874,20 @@ export default function Home() {
               <div className="illust-right">
                 <img
                   src="/images/rocking-horse.png"
-                  alt="Cavalinho de balanÃ§o"
+                  alt="Cavalinho de balanço"
                 />
               </div>
             </div>
 
-            {/* â”€â”€â”€ IlustraÃ§Ãµes bottom â”€â”€â”€ */}
+            {/* ——— Ilustrações bottom ——— */}
             <div className="bottom-illustrations"></div>
 
-            {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-                FORMULÃRIO DE CONFIRMAÃ‡ÃƒO
-                â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+            {/* ═════════════════════════════════════
+                FORMULÁRIO DE CONFIRMAÇÃO
+                ═════════════════════════════════════  */}
             <div className="form-separator">
               <div className="form-separator-line"></div>
-              <span className="form-separator-text">Confirme sua presenÃ§a</span>
+              <span className="form-separator-text">Confirme sua presença</span>
             </div>
 
             <div className="form-area">
@@ -918,7 +918,7 @@ export default function Home() {
                     />
                     <span className="companions-label">
                       {numberOfCompanions === "0"
-                        ? "Apenas vocÃª"
+                        ? "Apenas você"
                         : `+ ${numberOfCompanions} ${numberOfCompanions === "1" ? "acompanhante" : "acompanhantes"}`}
                     </span>
                   </div>
@@ -945,8 +945,8 @@ export default function Home() {
                         disabled={isPending}
                       />
                       <label htmlFor="opt-yes" className="option-label">
-                        <span className="option-emoji">ðŸ¤ </span>
-                        <span>Sim, estarei lÃ¡!</span>
+                        <span className="option-emoji">🤠</span>
+                        <span>Sim, estarei lá!</span>
                       </label>
                     </div>
 
@@ -968,8 +968,8 @@ export default function Home() {
                         disabled={isPending}
                       />
                       <label htmlFor="opt-maybe" className="option-label">
-                        <span className="option-emoji">ðŸ¤”</span>
-                        <span>Talvez, ainda nÃ£o sei</span>
+                        <span className="option-emoji">🤔</span>
+                        <span>Talvez, ainda não sei</span>
                       </label>
                     </div>
 
@@ -991,8 +991,8 @@ export default function Home() {
                         disabled={isPending}
                       />
                       <label htmlFor="opt-no" className="option-label">
-                        <span className="option-emoji">ðŸ˜¢</span>
-                        <span>NÃ£o poderei ir</span>
+                        <span className="option-emoji">😢</span>
+                        <span>Não poderei ir</span>
                       </label>
                     </div>
                   </div>
@@ -1005,13 +1005,13 @@ export default function Home() {
                 >
                   {isPending
                     ? "Confirmando..."
-                    : "Confirmar PresenÃ§a"}
+                    : "Confirmar Presença"}
                 </button>
               </form>
 
               <div className="card-footer">
                 <span className="footer-ln"></span>
-                <span className="footer-star">â˜…</span>
+                <span className="footer-star">★</span>
                 <span className="footer-ln"></span>
               </div>
             </div>
