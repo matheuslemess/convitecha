@@ -113,39 +113,11 @@ const styles = `
     margin-bottom: 0.25rem;
   }
 
-  .rope-line {
-    width: 2px;
-    height: 20px;
-    background: linear-gradient(180deg, #6B3A2A, #A67C52, #6B3A2A);
-    border-radius: 1px;
-  }
-
-  .medallion-circle {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 2px solid #C4A35A;
-    background: linear-gradient(135deg, #F2E4D0, #E8D5BC);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  .medallion-area img {
+    width: 90px;
+    height: auto;
     animation: gentleSwing 5s ease-in-out infinite;
-    overflow: hidden;
-  }
-
-  .medallion-circle img {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
-    filter: sepia(0.3) saturate(0.8);
-  }
-
-  /* Fallback horse silhouette via CSS */
-  .horse-silhouette {
-    font-size: 1.25rem;
-    color: #5C1A1B;
-    line-height: 1;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
   }
 
   /* ==============================
@@ -329,15 +301,6 @@ const styles = `
     line-height: 1.3;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-  }
-
-  .info-box-detail {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.7rem;
-    color: #8B5E3C;
-    font-weight: 500;
-    margin-top: 0.15rem;
-    line-height: 1.2;
   }
 
   /* ==============================
@@ -753,9 +716,7 @@ const styles = `
 export default function Home() {
   const [fullName, setFullName] = useState("");
   const [numberOfCompanions, setNumberOfCompanions] = useState("0");
-  const [confirmationStatus, setConfirmationStatus] = useState<
-    "yes" | "no" | "maybe"
-  >("yes");
+  const [confirmationStatus, setConfirmationStatus] = useState<"yes" | "no" | "maybe">("yes");
   const [submitted, setSubmitted] = useState(false);
 
   const submitConfirmation = trpc.confirmations.submit.useMutation({
@@ -769,7 +730,7 @@ export default function Home() {
         setSubmitted(false);
       }, 4000);
     },
-    onError: error => {
+    onError: (error) => {
       toast.error("Erro ao confirmar presença. Tente novamente.");
       console.error(error);
     },
@@ -797,12 +758,8 @@ export default function Home() {
           <div className="success-box">
             <div className="success-badge">🤠</div>
             <h2 className="success-h2">Yeehaw!</h2>
-            <p className="success-p">
-              {fullName}, sua presença foi registrada.
-            </p>
-            <p className="success-small">
-              Nos vemos no chá de fralda do Eze! 🐴
-            </p>
+            <p className="success-p">{fullName}, sua presença foi registrada.</p>
+            <p className="success-small">Nos vemos no chá de fralda do Eze! 🐴</p>
             <div className="card-footer">
               <span className="footer-ln"></span>
               <span className="footer-star">★</span>
@@ -821,18 +778,16 @@ export default function Home() {
       <div className="invitation-page">
         <div className="invitation-card">
           <div className="card-content">
+
             {/* ─── Medalhão pendurado ─── */}
             <div className="medallion-area">
-              <img 
-                src="/images/medallion.png" 
-                alt="Medalhão vintage" 
-                style={{ width: '90px', height: 'auto', animation: 'gentleSwing 5s ease-in-out infinite' }} 
-              />
+              <img src="/images/medallion.png" alt="Medalhão vintage" />
             </div>
 
             {/* ─── Banner fita curvada ─── */}
-            {/* ─── Ilustrações bottom ─── */}
-            <div className="bottom-illustrations"></div>
+            <div className="ribbon-banner">
+              <p className="ribbon-text">Você está convidado para o</p>
+            </div>
 
             {/* ─── Título principal ─── */}
             <div className="title-block">
@@ -851,42 +806,38 @@ export default function Home() {
             {/* ─── Mensagem de presentes ─── */}
             <div className="gift-message">
               <p className="highlight">
-                Com carinho, sugerimos fraldas
-                <br />
+                Com carinho, sugerimos fraldas<br />
                 tamanho M ou G.
               </p>
               <p className="secondary">
-                E, se sentirem-se à vontade, um mimo
-                <br />
+                E, se sentirem-se à vontade, um mimo<br />
                 será muito especial!
               </p>
             </div>
 
             {/* ─── Caixas de informação ─── */}
             <div className="info-boxes">
-              <div className="illust-left">
-                <img src="/images/teddy.png" />
+              <div className="info-box">
+                <div className="info-box-icon">📍</div>
+                <p className="info-box-text">Rua do Leão,<br/>92 - Estrela<br/>Dalva</p>
               </div>
               <div className="info-box">
                 <div className="info-box-icon">📅</div>
-                <p className="info-box-text">
-                  13 de
-                  <br />
-                  Junho
-                  <br />
-                  2026
-                </p>
-                <p className="info-box-text">
-                  Às
-                  <br />
-                  15h00
-                </p>
+                <p className="info-box-text">13 de<br/>Junho<br/>2026</p>
+              </div>
+              <div className="info-box">
+                <div className="info-box-icon">🕐</div>
+                <p className="info-box-text">Às<br/>15h00</p>
+              </div>
+            </div>
+
+            {/* ─── Ilustrações bottom ─── */}
+            <div className="bottom-illustrations">
+              <div className="illust-left">
+                <img src="/images/teddy-bear.png" alt="Ursinho vintage" />
               </div>
               <div className="illust-right">
-                <img
-                  src="/images/rocking-horse.png"
-                  alt="Cavalinho de balanço"
-                />
+                <img src="/images/rocking-horse.png" alt="Cavalinho de balanço" />
               </div>
             </div>
 
@@ -907,7 +858,7 @@ export default function Home() {
                     className="form-input"
                     placeholder="Digite seu nome completo"
                     value={fullName}
-                    onChange={e => setFullName(e.target.value)}
+                    onChange={(e) => setFullName(e.target.value)}
                     disabled={submitConfirmation.isPending}
                   />
                 </div>
@@ -921,7 +872,7 @@ export default function Home() {
                       max="10"
                       className="form-input companions-field"
                       value={numberOfCompanions}
-                      onChange={e => setNumberOfCompanions(e.target.value)}
+                      onChange={(e) => setNumberOfCompanions(e.target.value)}
                       disabled={submitConfirmation.isPending}
                     />
                     <span className="companions-label">
@@ -937,16 +888,10 @@ export default function Home() {
                   <div className="options-list">
                     <div
                       className={`option-item ${confirmationStatus === "yes" ? "selected-yes" : ""}`}
-                      onClick={() =>
-                        !submitConfirmation.isPending &&
-                        setConfirmationStatus("yes")
-                      }
+                      onClick={() => !submitConfirmation.isPending && setConfirmationStatus("yes")}
                     >
                       <input
-                        type="radio"
-                        name="confirmation"
-                        value="yes"
-                        id="opt-yes"
+                        type="radio" name="confirmation" value="yes" id="opt-yes"
                         className="option-radio"
                         checked={confirmationStatus === "yes"}
                         onChange={() => setConfirmationStatus("yes")}
@@ -960,16 +905,10 @@ export default function Home() {
 
                     <div
                       className={`option-item ${confirmationStatus === "maybe" ? "selected-maybe" : ""}`}
-                      onClick={() =>
-                        !submitConfirmation.isPending &&
-                        setConfirmationStatus("maybe")
-                      }
+                      onClick={() => !submitConfirmation.isPending && setConfirmationStatus("maybe")}
                     >
                       <input
-                        type="radio"
-                        name="confirmation"
-                        value="maybe"
-                        id="opt-maybe"
+                        type="radio" name="confirmation" value="maybe" id="opt-maybe"
                         className="option-radio"
                         checked={confirmationStatus === "maybe"}
                         onChange={() => setConfirmationStatus("maybe")}
@@ -983,16 +922,10 @@ export default function Home() {
 
                     <div
                       className={`option-item ${confirmationStatus === "no" ? "selected-no" : ""}`}
-                      onClick={() =>
-                        !submitConfirmation.isPending &&
-                        setConfirmationStatus("no")
-                      }
+                      onClick={() => !submitConfirmation.isPending && setConfirmationStatus("no")}
                     >
                       <input
-                        type="radio"
-                        name="confirmation"
-                        value="no"
-                        id="opt-no"
+                        type="radio" name="confirmation" value="no" id="opt-no"
                         className="option-radio"
                         checked={confirmationStatus === "no"}
                         onChange={() => setConfirmationStatus("no")}
@@ -1011,9 +944,7 @@ export default function Home() {
                   disabled={submitConfirmation.isPending}
                   className="confirm-btn"
                 >
-                  {submitConfirmation.isPending
-                    ? "Confirmando..."
-                    : "Confirmar Presença"}
+                  {submitConfirmation.isPending ? "Confirmando..." : "Confirmar Presença"}
                 </button>
               </form>
 
@@ -1023,6 +954,7 @@ export default function Home() {
                 <span className="footer-ln"></span>
               </div>
             </div>
+
           </div>
         </div>
       </div>
