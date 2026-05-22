@@ -716,7 +716,9 @@ const styles = `
 export default function Home() {
   const [fullName, setFullName] = useState("");
   const [numberOfCompanions, setNumberOfCompanions] = useState("0");
-  const [confirmationStatus, setConfirmationStatus] = useState<"yes" | "no" | "maybe">("yes");
+  const [confirmationStatus, setConfirmationStatus] = useState<
+    "yes" | "no" | "maybe"
+  >("yes");
   const [submitted, setSubmitted] = useState(false);
 
   const submitConfirmation = trpc.confirmations.submit.useMutation({
@@ -730,7 +732,7 @@ export default function Home() {
         setSubmitted(false);
       }, 4000);
     },
-    onError: (error) => {
+    onError: error => {
       toast.error("Erro ao confirmar presença. Tente novamente.");
       console.error(error);
     },
@@ -758,8 +760,12 @@ export default function Home() {
           <div className="success-box">
             <div className="success-badge">🤠</div>
             <h2 className="success-h2">Yeehaw!</h2>
-            <p className="success-p">{fullName}, sua presença foi registrada.</p>
-            <p className="success-small">Nos vemos no chá de fralda do Eze! 🐴</p>
+            <p className="success-p">
+              {fullName}, sua presença foi registrada.
+            </p>
+            <p className="success-small">
+              Nos vemos no chá de fralda do Eze! 🐴
+            </p>
             <div className="card-footer">
               <span className="footer-ln"></span>
               <span className="footer-star">★</span>
@@ -778,7 +784,6 @@ export default function Home() {
       <div className="invitation-page">
         <div className="invitation-card">
           <div className="card-content">
-
             {/* ─── Medalhão pendurado ─── */}
             <div className="medallion-area">
               <img src="/images/medallion.png" alt="Medalhão vintage" />
@@ -806,40 +811,47 @@ export default function Home() {
             {/* ─── Mensagem de presentes ─── */}
             <div className="gift-message">
               <p className="highlight">
-                Com carinho, sugerimos fraldas<br />
+                Com carinho, sugerimos fraldas
+                <br />
                 tamanho M ou G.
               </p>
               <p className="secondary">
-                E, se sentirem-se à vontade, um mimo<br />
+                E, se sentirem-se à vontade, um mimo
+                <br />
                 será muito especial!
               </p>
             </div>
 
             {/* ─── Caixas de informação ─── */}
             <div className="info-boxes">
-              <div className="info-box">
-                <div className="info-box-icon">📍</div>
-                <p className="info-box-text">Rua do Leão,<br/>92 - Estrela<br/>Dalva</p>
+              <div className="illust-left">
+                <img src="/images/teddy.png" alt="Ursinho vintage" />
               </div>
               <div className="info-box">
                 <div className="info-box-icon">📅</div>
-                <p className="info-box-text">13 de<br/>Junho<br/>2026</p>
+                <p className="info-box-text">
+                  13 de
+                  <br />
+                  Junho
+                  <br />
+                  2026
+                </p>
+                <p className="info-box-text">
+                  Às
+                  <br />
+                  15h00
+                </p>
               </div>
-              <div className="info-box">
-                <div className="info-box-icon">🕐</div>
-                <p className="info-box-text">Às<br/>15h00</p>
+              <div className="illust-right">
+                <img
+                  src="/images/rocking-horse.png"
+                  alt="Cavalinho de balanço"
+                />
               </div>
             </div>
 
             {/* ─── Ilustrações bottom ─── */}
-            <div className="bottom-illustrations">
-              <div className="illust-left">
-                <img src="/images/teddy-bear.png" alt="Ursinho vintage" />
-              </div>
-              <div className="illust-right">
-                <img src="/images/rocking-horse.png" alt="Cavalinho de balanço" />
-              </div>
-            </div>
+            <div className="bottom-illustrations"></div>
 
             {/* ═══════════════════════════════════
                 FORMULÁRIO DE CONFIRMAÇÃO
@@ -858,7 +870,7 @@ export default function Home() {
                     className="form-input"
                     placeholder="Digite seu nome completo"
                     value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
+                    onChange={e => setFullName(e.target.value)}
                     disabled={submitConfirmation.isPending}
                   />
                 </div>
@@ -872,7 +884,7 @@ export default function Home() {
                       max="10"
                       className="form-input companions-field"
                       value={numberOfCompanions}
-                      onChange={(e) => setNumberOfCompanions(e.target.value)}
+                      onChange={e => setNumberOfCompanions(e.target.value)}
                       disabled={submitConfirmation.isPending}
                     />
                     <span className="companions-label">
@@ -888,10 +900,16 @@ export default function Home() {
                   <div className="options-list">
                     <div
                       className={`option-item ${confirmationStatus === "yes" ? "selected-yes" : ""}`}
-                      onClick={() => !submitConfirmation.isPending && setConfirmationStatus("yes")}
+                      onClick={() =>
+                        !submitConfirmation.isPending &&
+                        setConfirmationStatus("yes")
+                      }
                     >
                       <input
-                        type="radio" name="confirmation" value="yes" id="opt-yes"
+                        type="radio"
+                        name="confirmation"
+                        value="yes"
+                        id="opt-yes"
                         className="option-radio"
                         checked={confirmationStatus === "yes"}
                         onChange={() => setConfirmationStatus("yes")}
@@ -905,10 +923,16 @@ export default function Home() {
 
                     <div
                       className={`option-item ${confirmationStatus === "maybe" ? "selected-maybe" : ""}`}
-                      onClick={() => !submitConfirmation.isPending && setConfirmationStatus("maybe")}
+                      onClick={() =>
+                        !submitConfirmation.isPending &&
+                        setConfirmationStatus("maybe")
+                      }
                     >
                       <input
-                        type="radio" name="confirmation" value="maybe" id="opt-maybe"
+                        type="radio"
+                        name="confirmation"
+                        value="maybe"
+                        id="opt-maybe"
                         className="option-radio"
                         checked={confirmationStatus === "maybe"}
                         onChange={() => setConfirmationStatus("maybe")}
@@ -922,10 +946,16 @@ export default function Home() {
 
                     <div
                       className={`option-item ${confirmationStatus === "no" ? "selected-no" : ""}`}
-                      onClick={() => !submitConfirmation.isPending && setConfirmationStatus("no")}
+                      onClick={() =>
+                        !submitConfirmation.isPending &&
+                        setConfirmationStatus("no")
+                      }
                     >
                       <input
-                        type="radio" name="confirmation" value="no" id="opt-no"
+                        type="radio"
+                        name="confirmation"
+                        value="no"
+                        id="opt-no"
                         className="option-radio"
                         checked={confirmationStatus === "no"}
                         onChange={() => setConfirmationStatus("no")}
@@ -944,7 +974,9 @@ export default function Home() {
                   disabled={submitConfirmation.isPending}
                   className="confirm-btn"
                 >
-                  {submitConfirmation.isPending ? "Confirmando..." : "Confirmar Presença"}
+                  {submitConfirmation.isPending
+                    ? "Confirmando..."
+                    : "Confirmar Presença"}
                 </button>
               </form>
 
@@ -954,7 +986,6 @@ export default function Home() {
                 <span className="footer-ln"></span>
               </div>
             </div>
-
           </div>
         </div>
       </div>
