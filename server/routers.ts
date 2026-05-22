@@ -1,10 +1,9 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
+import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
-import { createGuestConfirmation, getAllConfirmations, getConfirmationStats } from "./db";
-import { notifyOwner } from "./_core/notification";
+import { ENV } from "./_core/env";
 
 export const appRouter = router({
   system: systemRouter,
@@ -29,38 +28,38 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const confirmation = await createGuestConfirmation(input);
-        
-        // Notify owner of new confirmation
         const statusLabels = {
-          yes: "Confirmou presença",
-          no: "Recusou presença",
-          maybe: "Talvez compareça",
+          yes: "Confirmou presença ✅",
+          no: "Recusou presença ❌",
+          maybe: "Talvez compareça 🤷‍♂️",
         };
         
-        await notifyOwner({
-          title: `Nova confirmação de presença: ${input.fullName}`,
-          content: `${input.fullName} ${statusLabels[input.confirmationStatus]}. Acompanhantes: ${input.numberOfCompanions}`,
-        });
+        const message = `🎉 *Nova resposta ao convite!*\n\n*Nome:* ${input.fullName}\n*Status:* ${statusLabels[input.confirmationStatus]}\n*Acompanhantes:* ${input.numberOfCompanions}`;
         
-        return confirmation;
+        if (ENV.telegramBotToken && ENV.telegramChatId) {
+          try {
+            const res = await fetch(`https://api.telegram.org/bot${ENV.telegramBotToken}/sendMessage`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                chat_id: ENV.telegramChatId,
+                text: message,
+                parse_mode: "Markdown"
+              })
+            });
+            
+            if (!res.ok) {
+              console.error("Telegram API Error:", await res.text());
+            }
+          } catch (e) {
+            console.error("Failed to send Telegram message", e);
+          }
+        } else {
+          console.warn("Telegram credentials not configured. Skipping notification.");
+        }
+        
+        return { success: true };
       }),
-    
-    list: protectedProcedure.query(async ({ ctx }) => {
-      // Only admin can see all confirmations
-      if (ctx.user?.role !== "admin") {
-        throw new Error("Unauthorized");
-      }
-      return await getAllConfirmations();
-    }),
-    
-    stats: protectedProcedure.query(async ({ ctx }) => {
-      // Only admin can see stats
-      if (ctx.user?.role !== "admin") {
-        throw new Error("Unauthorized");
-      }
-      return await getConfirmationStats();
-    }),
   }),
 });
 
