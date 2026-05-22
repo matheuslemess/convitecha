@@ -295,7 +295,7 @@ const styles = `
 
   .info-box-text {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 0.75rem;
+    font-size: 1.1rem;
     color: #5C1A1B;
     font-weight: 700;
     line-height: 1.3;
@@ -685,7 +685,7 @@ const styles = `
     }
 
     .info-box-text {
-      font-size: 0.65rem;
+      font-size: 0.95rem;
     }
 
     .ribbon-banner {
@@ -716,13 +716,13 @@ const styles = `
 export default function Home() {
   const [fullName, setFullName] = useState("");
   const [numberOfCompanions, setNumberOfCompanions] = useState("0");
-  const [confirmationStatus, setConfirmationStatus] = useState<
-    "yes" | "no" | "maybe"
-  >("yes");
+  const [confirmationStatus, setConfirmationStatus] = useState<"yes" | "no">(
+    "yes"
+  );
   const [submitted, setSubmitted] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim()) {
       toast.error("Por favor, insira seu nome completo");
@@ -733,7 +733,9 @@ export default function Home() {
     const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
 
     if (!token || !chatId) {
-      toast.error("Erro técnico: O robô do Telegram não foi configurado corretamente nas variáveis de ambiente.");
+      toast.error(
+        "Erro técnico: O robô do Telegram não foi configurado corretamente nas variáveis de ambiente."
+      );
       return;
     }
 
@@ -742,21 +744,23 @@ export default function Home() {
     const statusLabels = {
       yes: "Confirmou presença ✅",
       no: "Recusou presença ❌",
-      maybe: "Talvez compareça 🤷‍♂️",
     };
 
     const message = `🎉 *Nova resposta ao convite!*\n\n*Nome:* ${fullName.trim()}\n*Status:* ${statusLabels[confirmationStatus]}\n*Acompanhantes:* ${numberOfCompanions}`;
 
     try {
-      const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-          parse_mode: "Markdown"
-        })
-      });
+      const res = await fetch(
+        `https://api.telegram.org/bot${token}/sendMessage`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: "Markdown",
+          }),
+        }
+      );
 
       if (res.ok) {
         setSubmitted(true);
@@ -769,7 +773,9 @@ export default function Home() {
         }, 4000);
       } else {
         const errorText = await res.text();
-        toast.error(`Erro ao enviar para o Telegram. Verifique as credenciais do bot.`);
+        toast.error(
+          `Erro ao enviar para o Telegram. Verifique as credenciais do bot.`
+        );
         console.error("Telegram API Error:", errorText);
       }
     } catch (error: any) {
@@ -782,19 +788,32 @@ export default function Home() {
 
   /* ---------- SUCCESS ---------- */
   if (submitted) {
+    let title = "";
+    let message = "";
+    let subMessage = "";
+    let badge = "";
+
+    if (confirmationStatus === "yes") {
+      title = "Esplêndido!";
+      message = `${fullName}, sua presença está confirmada.`;
+      subMessage = "Nos vemos no chá de fralda do Thomas! 🧸";
+      badge = "🎩";
+    } else {
+      title = "Ah, que pena!";
+      message = `${fullName}, registramos que você não poderá ir.`;
+      subMessage = "Sentiremos sua falta, mas entendemos! 🥀";
+      badge = "🕰️";
+    }
+
     return (
       <>
         <style>{styles}</style>
         <div className="success-overlay">
           <div className="success-box">
-            <div className="success-badge">🤠</div>
-            <h2 className="success-h2">Yeehaw!</h2>
-            <p className="success-p">
-              {fullName}, sua presença foi registrada.
-            </p>
-            <p className="success-small">
-              Nos vemos no chá de fralda do Eze! 🐎
-            </p>
+            <div className="success-badge">{badge}</div>
+            <h2 className="success-h2">{title}</h2>
+            <p className="success-p">{message}</p>
+            <p className="success-small">{subMessage}</p>
             <div className="card-footer">
               <span className="footer-ln"></span>
               <span className="footer-star">★</span>
@@ -820,14 +839,14 @@ export default function Home() {
 
             {/* ——— Banner fita curvada ——— */}
             <div className="ribbon-banner">
-              <p className="ribbon-text">Você está convidado para o</p>
+              <p className="ribbon-text">Confirme sua presença no</p>
             </div>
 
             {/* ——— Título principal ——— */}
             <div className="title-block">
               <h1 className="title-main">Chá de Bebê</h1>
               <p className="title-sub">do</p>
-              <p className="baby-name">EZE</p>
+              <p className="baby-name">THOMAS</p>
             </div>
 
             {/* ——— Divisor ——— */}
@@ -835,20 +854,6 @@ export default function Home() {
               <span className="divider-line"></span>
               <span className="divider-diamond"></span>
               <span className="divider-line"></span>
-            </div>
-
-            {/* ——— Mensagem de presentes ——— */}
-            <div className="gift-message">
-              <p className="highlight">
-                Com carinho, sugerimos fraldas
-                <br />
-                tamanho M ou G.
-              </p>
-              <p className="secondary">
-                E, se sentirem-se à vontade, um mimo
-                <br />
-                será muito especial!
-              </p>
             </div>
 
             {/* ——— Caixas de informação ——— */}
@@ -859,16 +864,11 @@ export default function Home() {
               <div className="info-box">
                 <div className="info-box-icon">📅</div>
                 <p className="info-box-text">
-                  13 de
+                  06 de
                   <br />
                   Junho
                   <br />
                   2026
-                </p>
-                <p className="info-box-text">
-                  Às
-                  <br />
-                  15h00
                 </p>
               </div>
               <div className="illust-right">
@@ -929,10 +929,7 @@ export default function Home() {
                   <div className="options-list">
                     <div
                       className={`option-item ${confirmationStatus === "yes" ? "selected-yes" : ""}`}
-                      onClick={() =>
-                        !isPending &&
-                        setConfirmationStatus("yes")
-                      }
+                      onClick={() => !isPending && setConfirmationStatus("yes")}
                     >
                       <input
                         type="radio"
@@ -945,40 +942,14 @@ export default function Home() {
                         disabled={isPending}
                       />
                       <label htmlFor="opt-yes" className="option-label">
-                        <span className="option-emoji">🤠</span>
+                        <span className="option-emoji">🎩</span>
                         <span>Sim, estarei lá!</span>
                       </label>
                     </div>
 
                     <div
-                      className={`option-item ${confirmationStatus === "maybe" ? "selected-maybe" : ""}`}
-                      onClick={() =>
-                        !isPending &&
-                        setConfirmationStatus("maybe")
-                      }
-                    >
-                      <input
-                        type="radio"
-                        name="confirmation"
-                        value="maybe"
-                        id="opt-maybe"
-                        className="option-radio"
-                        checked={confirmationStatus === "maybe"}
-                        onChange={() => setConfirmationStatus("maybe")}
-                        disabled={isPending}
-                      />
-                      <label htmlFor="opt-maybe" className="option-label">
-                        <span className="option-emoji">🤔</span>
-                        <span>Talvez, ainda não sei</span>
-                      </label>
-                    </div>
-
-                    <div
                       className={`option-item ${confirmationStatus === "no" ? "selected-no" : ""}`}
-                      onClick={() =>
-                        !isPending &&
-                        setConfirmationStatus("no")
-                      }
+                      onClick={() => !isPending && setConfirmationStatus("no")}
                     >
                       <input
                         type="radio"
@@ -991,7 +962,7 @@ export default function Home() {
                         disabled={isPending}
                       />
                       <label htmlFor="opt-no" className="option-label">
-                        <span className="option-emoji">😢</span>
+                        <span className="option-emoji">🥀</span>
                         <span>Não poderei ir</span>
                       </label>
                     </div>
@@ -1003,9 +974,7 @@ export default function Home() {
                   disabled={isPending}
                   className="confirm-btn"
                 >
-                  {isPending
-                    ? "Confirmando..."
-                    : "Confirmar Presença"}
+                  {isPending ? "Confirmando..." : "Confirmar Presença"}
                 </button>
               </form>
 
@@ -1021,4 +990,3 @@ export default function Home() {
     </>
   );
 }
-
